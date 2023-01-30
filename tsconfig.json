@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "rootDir": "./lib",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"],
+    "declaration": true,
+    "skipLibCheck": true
+  }
+}
