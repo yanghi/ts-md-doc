@@ -3,9 +3,8 @@ import fs from 'fs'
 import { markdownTable } from 'markdown-table'
 import MarkDownWriter from './markdown/writer';
 
-const writer = new MarkDownWriter()
-
 function parseExportedDeclarations(
+  writer: MarkDownWriter,
   exportsModules: ReturnType<SourceFile['getExportedDeclarations']>,
   parentSourceFile: SourceFile,
   parentScope: string | undefined,
@@ -145,6 +144,7 @@ function parseExportedDeclarations(
         })
 
         parseExportedDeclarations(
+          writer,
           declaration.getExportedDeclarations(),
           parentSourceFile,
           renderWithParentScope(declaration.getName()),
@@ -162,13 +162,15 @@ function createGenerator(options: { path: string }) {
 
   project.addSourceFilesAtPaths(path)
 
+  const writer = new MarkDownWriter()
+
   function render(){
     const sourceFiles = project.getSourceFiles();
 
       for (const sourceFile of sourceFiles) {
         const exportsModules = sourceFile.getExportedDeclarations()
 
-        parseExportedDeclarations(exportsModules, sourceFile, undefined, undefined)
+        parseExportedDeclarations(writer,exportsModules, sourceFile, undefined, undefined)
       }
 
     return writer.toString()
