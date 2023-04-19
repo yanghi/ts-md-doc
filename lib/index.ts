@@ -1,4 +1,4 @@
-import { Project, ts, SourceFile, ExportedDeclarations } from 'ts-morph'
+import { Project, ts, SourceFile, ExportedDeclarations, TypeChecker } from 'ts-morph'
 import fs from 'fs'
 import { markdownTable } from 'markdown-table'
 import MarkDownWriter from './markdown/writer';
@@ -81,11 +81,11 @@ function parseExportedDeclarations(
             writer.write(', ')
           }
 
-          writer.write(`${parameter.getName()}: ${parameter.getType().getText(parentSourceFile)}`)
+          writer.write(`${parameter.getName()}: ${ parameter.getType().getText(parentSourceFile)}`)
 
         }
 
-        writer.writeln(`): ${signature.getReturnType().getText()}`)
+        writer.writeln(`): ${signature.getReturnType().getText(parentSourceFile)}`)
         writer.writeCodeEnd()
 
         signature.getJsDocTags().forEach(tag => {
@@ -128,14 +128,18 @@ function parseExportedDeclarations(
         }
         // returns type
         writer.writeBlodTitle("ReturnType")
-        writer.writeln(signature.getReturnType().getText())
+        writer.writeln(signature.getReturnType().getText(parentSourceFile))
         writer.writeln()
 
       } else if (declaration.isKind(ts.SyntaxKind.VariableDeclaration)) {
 
         writer.writeBlodTitle(declaration.getName())
       } else if (declaration.isKind(ts.SyntaxKind.TypeAliasDeclaration)) {
-
+        writer.writeH3(`${renderWithParentScope(declaration.getName())} Type`)
+        declaration.getJsDocs().forEach(jsd => {
+          writer.writeDoubleln(jsd.getDescription())
+        })
+        writer.writeCode(declaration.getText())
       } else if (declaration.isKind(ts.SyntaxKind.ModuleDeclaration)) {
         writer.writeH2(`${declaration.getName()} Namespace`)
 
@@ -169,7 +173,6 @@ function createGenerator(options: { path: string }) {
 
       for (const sourceFile of sourceFiles) {
         const exportsModules = sourceFile.getExportedDeclarations()
-
         parseExportedDeclarations(writer,exportsModules, sourceFile, undefined, undefined)
       }
 

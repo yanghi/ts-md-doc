@@ -30,6 +30,10 @@ export declare namespace awsome {
         one = 0,
         two = 1
     }
+    /**
+     * namespcae type example
+     */
+    type NamespaceType = Record<string, number>;
 }
 export declare type AnyObj = Record<any, any>;
 export declare type AnyObject = AnyObj;

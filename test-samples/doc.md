@@ -67,3 +67,21 @@ interface InterfaceA {
 | ---- | --------------- | ----- |
 | one  | enum member one | `0`   |
 | two  |                 | `1`   |
+### awsome.NamespaceType Type
+
+
+namespcae type example
+
+```ts
+type NamespaceType = Record<string, number>;
+```
+### AnyObj Type
+
+```ts
+export declare type AnyObj = Record<any, any>;
+```
+### AnyObject Type
+
+```ts
+export declare type AnyObject = AnyObj;
+```
